@@ -1,246 +1,263 @@
-#include<stdio.h>
-#include<math.h>
-#include<stdlib.h>
-#include<time.h>
-#include<string.h>
-#include<conio.h>
-#include<graphics.h>
-#include "a.c"
-extern char*a[12][50];
-int maxx,maxy;
-     welcome()
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <conio.h>
+#include <graphics.h>
+#include "WORDS.c"
+
+
+extern char* words[12][50];
+
+int maxx, maxy;
+
+
+void welcome()
 {
- setfillstyle(1,DARKGRAY);
- bar(maxx/2-350,maxy/2-280,maxx/2+350,maxy/2+280);
- setcolor(RED);
- outtextxy(maxx/2-100,maxy/2-150,"   ANAGRAM");
- outtextxy(maxx/2-120,maxy/2+80,"PRESS ANY KEY TO CONTINUE..!");
- setcolor(2);
- outtextxy(maxx/2-120,maxy/2-100,"Instructions:");
- outtextxy(maxx/2-120,maxy/2-80,"You will recieve jumbled words");
-  outtextxy(maxx/2-120,maxy/2-60,"Try to solve as many as you can");
+	setfillstyle(1, DARKGRAY);
+	bar(maxx/2-350, maxy/2-280, maxx/2+350, maxy/2+280);
+	
+	setcolor(RED);
+	outtextxy(maxx/2-100, maxy/2-150,"   ANAGRAM");
+	outtextxy(maxx/2-120, maxy/2+80,"PRESS ANY KEY TO CONTINUE..!");
+	
+	setcolor(2);
+	outtextxy(maxx/2-120, maxy/2-100,"Instructions:");
+	outtextxy(maxx/2-120, maxy/2-80,"You will recieve jumbled words");
+	outtextxy(maxx/2-120, maxy/2-60,"Try to solve as many as you can");
 
- setcolor(BLUE);
-  outtextxy(maxx/2-120,maxy/2-40,"Points are as follows:-");
-  outtextxy(maxx/2-120,maxy/2-20,"Score is multiplied with 10 and the level");
- setcolor(YELLOW);
- outtextxy(maxx/2-120,maxy/2-0,"EG: Level 1--> score is 10*1");
+	setcolor(BLUE);
+	outtextxy(maxx/2-120, maxy/2-40,"Points are as follows:-");
+	outtextxy(maxx/2-120, maxy/2-20,"Score is multiplied with 10 and the level");
+	
+	setcolor(YELLOW);
+	outtextxy(maxx/2-120, maxy/2-0,"EG: Level 1--> score is 10*1");
 
- getch();
- setfillstyle(1,0);
- setcolor(0);
- bar(maxx/2-350,maxy/2-280,maxx/2+350,maxy/2+280);
+	getch();
+	
+	setfillstyle(1, 0);
+	setcolor(0);
+	bar(maxx/2-350, maxy/2-280, maxx/2+350, maxy/2+280);
 
- return 0;
+	return 0;
 }
 
 
-     int rand_int(int n) {
+int rand_int(int number) {
 
-	int limit = RAND_MAX - RAND_MAX % n;
+	int limit = RAND_MAX - RAND_MAX % number;
+	int random_number;
+	time_t t;
 
-	int rnd;
-			time_t t;
-
-
-		srand((unsigned) time(&t));
+	srand((unsigned) time(&t));
 	do {
+	random_number = rand();
+	}while (random_number >= limit);
 
-	    rnd = rand();
+	return random_number % number;
 
+}
+
+
+void swap(char *word) {
+
+	int counter, counter_2, number;
+	char tmp;
+	number = strlen(word);
+
+	for (counter = number - 1; counter > 0; counter--) 
+	{
+		counter_2 = rand_int(counter + 1);
+		tmp = word[counter_2];
+		word[counter_2] = word[counter];
+		word[counter] = tmp;
 	}
 
-	while (rnd >= limit);
-
-	return rnd % n;
-
-    }
+}
 
 
-
-    void swap(char *array) {
-
-	int i, j,n;
-		char tmp;
-			n=strlen(array);
-
-
-	for (i = n - 1; i > 0; i--) {
-
-	    j = rand_int(i + 1);
-
-	    tmp = array[j];
-
-	    array[j] = array[i];
-
-	    array[i] = tmp;
-
-       }
-
-
-    }
-
-int randNoGen()
+int random_number_generator()
 {
-   int y;
+   int random_number;
    time_t t;
+   
    srand((unsigned) time(&t));
-   y=rand()%50;
+   
+   random_number = rand() %50;
 
-   return y;
-}
-gaover()
-{
-int gm=0,gd=DETECT,i,j;
-initgraph(&gd,&gm," ");
-
-for(i=1;i<=51;i+=4)
-{
-setcolor(i);
-sound(400-i);
-outtextxy(260-i,340-i*10,"GAME OVER");
-nosound();
-go(0,60,20,80,random(15),random(15));
-delay(3);
-go(400,460,420,480,random(15),random(15));
+   return random_number;
 }
 
-//getch();
+
+void gameover()
+{
+	int gm = 0, gd = DETECT, counter, counter_2;
+	initgraph(&gd, &gm, " ");
+
+	for(counter = 1; counter <= 51; counter += 	4)
+	{
+		setcolor(counter);
+		sound(400-counter);
+		outtextxy(260-counter, 340-counter*10, "GAME OVER");
+		nosound();
+		go(0, 60, 20, 80, random(15), random(15));
+		delay(3);
+		go(400, 460, 420, 480, random(15), random(15));
+	}
+
 }
 
-go(int sy1,int ey1,int sy2,int ey2,int k,int h)
-{
-int i,j;
-for(j=sy1;j<=ey1;j+=40)        //120
-{
 
-for(i=0;i<=640;i+=40)
+void go(int sy1, int ey1, int sy2, int ey2, int k, int h)
 {
+	int counter, counter_2;
+	
+	for(counter = sy1; counter <= ey1; counter += 40)        
+	{
+		for(counter_2 = 0; counter_2 <= 640; counter_2 += 40)
+		{
+			setcolor(k);
+			rectangle(counter_2, 1 + counter, 20 + counter_2, 21 + counter);
+			setfillstyle(SOLID_FILL, k);
+			floodfill(10 + counter_2, 10 + counter, k);
+			
+			setcolor(h);
+			rectangle(20 + counter_2, 1 + counter, 40 + counter_2, 21 + counter);
+			setfillstyle(SOLID_FILL, h);
+			floodfill(25 + counter_2, 10 + counter, h);
+		}
+	}
+	
+	for(counter_2 = sy2; counter_2 <= ey2; counter_2 += 40)
+	{
+		for(counter = 0; counter <= 640; counter += 40)
+		{
+			setcolor(h);
+			rectangle(counter, 1 + counter_2, 20 + counter, 21 + counter_2);
+			setfillstyle(SOLID_FILL, h);
+			floodfill(10 + counter, 10 + counter_2, h);
+			
+			setcolor(k);
+			rectangle(20 + counter, 1 + counter_2, 40 + counter, 21 + counter_2);
+			setfillstyle(SOLID_FILL, k);
+			floodfill(25 + counter, 10 + counter_2, k);
+		}
+	}
 
-setcolor(k);
-rectangle(i,1+j,20+i,21+j);
-setfillstyle(SOLID_FILL,k);
-floodfill(10+i,10+j,k);
-setcolor(h);
-rectangle(20+i,1+j,40+i,21+j);
-setfillstyle(SOLID_FILL,h);
-floodfill(25+i,10+j,h);
-}
-}
-for(j=sy2;j<=ey2;j+=40)
-{
-
-for(i=0;i<=640;i+=40)
-{
-
-setcolor(h);
-rectangle(i,1+j,20+i,21+j);
-setfillstyle(SOLID_FILL,h);
-floodfill(10+i,10+j,h);
-setcolor(k);
-rectangle(20+i,1+j,40+i,21+j);
-setfillstyle(SOLID_FILL,k);
-floodfill(25+i,10+j,k);
-}
-}
-//
 }
 
 
 void main()
 {
-	int i,level=1,c1=1,score=0;
-	 int gd=DETECT,gm;
-	char tit[7]={"ANAGRAM"},game[8]={"GAMEOVER"},b[15],c[15],d[15];
+	int counter, level = 1, level_counter=1, score=0;
+	
+	int gd = DETECT, gm;
+	char word_swapped[15], word_copy[15], user_answer[15];
+	
 	clrscr();
-	for(i=0;i<7;i++)
-	printf("\t\t\t\t\t%c\n",tit[i]);
+	
+	initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");
+	maxx = getmaxx();
+	maxy = getmaxy();
+	
+	welcome();
+	
+	while(level <= 10)
+	{
+		setfillstyle(1, 0);
+		setcolor(0);
 
- initgraph(&gd,&gm,"C:\\TURBOC3\\BGI");
- maxx=getmaxx();
- maxy=getmaxy();
- welcome();
-while(level<=10)
-	{        setfillstyle(1,0);
- setcolor(0);
+		bar(maxx/2 - 350, maxy/2 - 280, maxx/2 + 350, maxy/2 + 280);
 
- bar(maxx/2-350,maxy/2-280,maxx/2+350,maxy/2+280);
-
-		if(c1<=8)
+		if(level_counter <= 8)
 		{
-			int x=randNoGen();
+			int word_length = random_number_generator();
 
-			 printf("\n\n\n\t\t\tLEVEL%d\n\n\n",level);
+			printf("\n\n\n\t\t\tLEVEL%d\n\n\n", level);
+	
+			strcpy(word_swapped, words[level_counter-1][word_length]);
+			strcpy(word_copy, word_swapped);
 
-			 strcpy(b,a[c1-1][x]);
-			 strcpy(c,b);
-			 h:swap(b);
-			 if(strcmp(b,c)==0)
-			 goto h;
-			 for(i=0;i<strlen(b);i++)
-			 printf("%c ",b[i]);
-			 printf("\n");
-			 scanf("%s",d);
-			 if((strcmp(d,c))==0)
-			 {
+			LABEL_1 : swap(word_swapped);
+			if(strcmp(word_swapped, word_copy) == 0)
+				goto LABEL_1;
+
+			for(counter = 0; counter < strlen(word_swapped); counter ++)
+				printf("%c ", word_swapped[counter]);
+			printf("\n");
+			
+			scanf("%s", user_answer);
+			
+			if((strcmp(user_answer, word_copy)) == 0)
+			{
 				printf("\n\nCongratulations!!!Correct answer\n\n\n\n");
+				
 				delay(1000);
 				clrscr();
-				score=score+10*level;
-				level++;
-			 }
-			 else
-			 {
-
-			  printf("Correct answer is:%s\n Score is:%d",c,score);
-			  break;
-			 }
+				
+				score = score + 10 * level;
+				level ++;
+			}
+			else
+			{
+				printf("Correct answer is:%s\n Score is:%d", word_copy, score);
+				break;
+			}
 		}
 		else
 		{
-			int x=randNoGen();
-			int y;
-			  printf("\n\n\n\t\t\tLEVEL%d\n",level);
-			 printf("Enter the word length between12 to 14:");
-			 scanf("%d",&y);
-			 printf("\n\n");
-			 strcpy(b,a[y-4][x]);
-			 strcpy(c,b);
-			 h1:swap(b);
-			 if(strcmp(b,c)==0)
-			 goto h1;
-			 for(i=0;i<strlen(b);i++)
-			 printf("%c ",b[i]);
-			 printf("\n");
-			 scanf("%s",d);
-			 if((strcmp(d,c))==0)
-			 {
-			   if(c1==10)
-			   {
-				printf("Congratulations!!!Correct Answer\nScore is:%d\n\n\n",score);
-				for(i=0;i<8;i++)
-				  printf("\t\t\t\t\t%c\n",game[i]);
-				  gaover();
+			int word_length = random_number_generator();
+			int user_word_length;
+			
+			printf("\n\n\n\t\t\tLEVEL%d\n", level);
+			printf("Enter the word length between 12 to 14:");
+			scanf("%d", &user_word_length);
+			printf("\n\n");
+			
+			strcpy(word_swapped, words[user_word_length-4][word_length]);
+			strcpy(word_copy, word_swapped);
+			
+			LABEL_2 : swap(word_swapped);
+			if(strcmp(word_swapped, word_copy) == 0)
+				goto LABEL_2;
+			
+			for(counter = 0; counter < strlen(word_swapped); counter ++)
+				printf("%c ", word_swapped[counter]);
+			printf("\n");
+			
+			scanf("%s", user_answer);
+			
+			if((strcmp(user_answer, word_copy)) == 0)
+			{
+				if(level_counter == 10)
+				{
+					printf("Congratulations!!!Correct Answer\nScore is:%d\n\n\n", score);
+					break;
 				}
 				else
 				{
-				printf("\n\nCongratulations!!!Correct answer\n\n\n\n");
-				delay(1000);
-				clrscr();
-				score=score+10*level;
-				level++; }
-			 }
-			 else
-			 {
-
-			  printf("Correct answer is:%s\n Score is:%d",c,score);
-			  break;
-
-			 }
+					printf("\n\nCongratulations!!!Correct answer\n\n\n\n");
+					
+					delay(1000);
+					clrscr();
+					
+					score = score + 10 * level;
+					level ++; 
+				}
+			}
+			else
+			{
+				printf("Correct answer is:%s\n Score is:%d", word_copy, score);
+				break;
+			}
 		}
-		c1++;
+		
+	level_counter ++;
 	}
+	
 	delay(2000);
-	gaover();
+	gameover();
 	getch();
+
 }
